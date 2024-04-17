@@ -2,13 +2,8 @@ import { writeFileSync, statSync, mkdirSync } from "fs";
 import { join, extname } from "path";
 export default defineEventHandler(async (event) => {
   const path = getRouterParam(event, "path");
-  const query = await getValidatedQuery(
-    event,
-    (data: Record<string, string>) => ({
-      temp: data.temp != "false",
-    })
-  );
-  const filepath = join(query.temp ? "temp" : "static", path);
+  const query = await getQuery(event);
+  const filepath = join(query.temp === "" ? "temp" : "static", path);
   const formData = await readFormData(event);
   const files = formData
     .getAll("file")

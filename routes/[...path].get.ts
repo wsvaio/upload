@@ -25,11 +25,15 @@ export default defineEventHandler((event) => {
         .filter((item) => item.isFile())
         .map((item) => join(item.path, item.name));
 
+
+      console.log(paths);
+
+      if (paths.length) {
+        const p = paths[Math.floor(Math.random() * paths.length)];
+        setHeader(event, "Content-Type", mine.getType(p));
+        return readFileSync(p);
+      }
       
-      
-      
-      // sendRedirect(event, getRequestHost(event) + paths[Math.floor(Math.random() * paths.length)])
-      return readFileSync(paths[Math.floor(Math.random() * paths.length)]);
     }
 
     return readdirSync(join("static", path), { recursive: true });

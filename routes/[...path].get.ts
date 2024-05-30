@@ -25,15 +25,22 @@ export default defineEventHandler((event) => {
         .filter((item) => item.isFile())
         .map((item) => join(item.path, item.name));
 
-
-      console.log(paths);
-
       if (paths.length) {
         const p = paths[Math.floor(Math.random() * paths.length)];
-        setHeader(event, "Content-Type", mine.getType(p));
-        return readFileSync(p);
+        // return sendRedirect(event, p.replace('static', ''));
+        if (query.url === "") {
+          console.log(getRequestHeaders(event));
+          return (
+            getRequestHeader(event, "x-forwarded-proto") +
+            "://" +
+            getRequestHeader(event, "host") +
+            p.replace("static", "")
+          );
+        } else {
+          setHeader(event, "Content-Type", mine.getType(p));
+          return readFileSync(p);
+        }
       }
-      
     }
 
     return readdirSync(join("static", path), { recursive: true });

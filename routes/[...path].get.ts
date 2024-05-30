@@ -27,15 +27,9 @@ export default defineEventHandler((event) => {
 
       if (paths.length) {
         const p = paths[Math.floor(Math.random() * paths.length)];
-        // return sendRedirect(event, p.replace('static', ''));
+
         if (query.url === "") {
-          console.log(getRequestHeaders(event));
-          return (
-            getRequestHeader(event, "x-forwarded-proto") +
-            "://" +
-            getRequestHeader(event, "host") +
-            p.replace("static", "")
-          );
+          return getRequestURL(event).origin + p.replace("static", "");
         } else {
           setHeader(event, "Content-Type", mine.getType(p));
           return readFileSync(p);
